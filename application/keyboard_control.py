@@ -26,6 +26,7 @@ class KeyboardArmController:
         self.step_size = 5  # mm for X, Y, Z movement
         self.rotation_step = 5  # degrees for rotation
         self.running = True
+        self.gripper_closed = False  # Track gripper state
         
         # Initialize position
         self.current_pose = self.device.get_pose()
@@ -39,6 +40,7 @@ class KeyboardArmController:
         print("  Z / C             : Rotate counter-clockwise/clockwise")
         print("  H                 : Home the arm (clears alarms)")
         print("  P                 : Print current pose")
+        print("  Space             : Toggle gripper (close/open)")
         print("  +/-               : Increase/decrease step size")
         print("  ?                 : Show controls (help)")
         print("  ESC               : Exit")
@@ -88,13 +90,14 @@ class KeyboardArmController:
         print("\nCommands:")
         print("  H                 : Home the arm (clears alarms)")
         print("  P                 : Print current pose")
+        print("  Space             : Toggle gripper (close/open)")
         print("  +/-               : Increase/decrease step size")
         print("  ?                 : Show this help")
-        print("  Space             : Print current pose")
         print("  ESC               : Exit")
         print("\nCurrent Settings:")
         print(f"  Step size         : {self.step_size}mm")
         print(f"  Rotation step     : {self.rotation_step}°")
+        print(f"  Gripper state     : {'Closed' if self.gripper_closed else 'Open'}")
         print("="*60 + "\n")
         
     def print_pose(self):
@@ -102,6 +105,17 @@ class KeyboardArmController:
         pose = self.device.get_pose()
         print(f"Current pose: X={pose.position.x:.2f}, Y={pose.position.y:.2f}, "
               f"Z={pose.position.z:.2f}, R={pose.position.r:.2f}")
+    
+    def toggle_gripper(self):
+        """Toggle gripper state - close or open"""
+        self.gripper_closed = not self.gripper_closed
+        if self.gripper_closed:
+            print("Closing gripper...")
+            self.device.grip(True)
+        else:
+            print("Opening gripper...")
+            self.device.grip(False)
+        print(f"Gripper is now: {'Closed' if self.gripper_closed else 'Open'}")
         
     def on_press(self, key):
         """Handle key press events"""
@@ -160,9 +174,9 @@ class KeyboardArmController:
                 elif key == keyboard.Key.right:
                     self.move_relative(dy=-self.step_size)
                 
-                # Space to print pose
+                # Space to toggle gripper
                 elif key == keyboard.Key.space:
-                    self.print_pose()
+                    self.toggle_gripper()
                 
                 # ESC to exit
                 elif key == keyboard.Key.esc:
