@@ -6,5 +6,12 @@ PyYAML==6.0.2
 pydobotplus
 pynput==1.7.6
 
+# Core dependencies for Week 2: Hand-eye Calibration
+numpy>=1.24.0,<1.27.0
+scipy>=1.10.0,<1.12.0
+pyrealsense2
+pupil-apriltags==1.0.4.post10
+opencv-python==4.11.0.86
+
 # Note: Additional dependencies (numpy, opencv, pyrealsense2) will be needed 
 # for advanced workshops involving computer vision and object detection
